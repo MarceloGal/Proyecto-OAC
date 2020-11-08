@@ -32,8 +32,8 @@ int main(int argc, char** argv) {
     //INICIZALIZAR RAM
     inicializar_memoria(&mem);
     //PUNTO DE INICIO DEL PROGRAMA
-    mem.ram[RESET_VAL_MSB] = 0x01;
-    mem.ram[RESET_VAL_LSB] = 0x01;
+    mem.ram[RESET_VAL_MSB] = 0x20;
+    mem.ram[RESET_VAL_LSB] = 0x00;
     // ACTUALIZAR EL PC
     reset_MOS6502(&cpu,&mem);
     //FUNCION PARA LEER LAS INSTRUCCIONES DE UN TXT

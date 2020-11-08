@@ -14,7 +14,7 @@
 #ifndef ESTRUCTURAS_BASICAS_H
 #define ESTRUCTURAS_BASICAS_H
 
-#define RESET_VAL_MSB 0xffdd
+#define RESET_VAL_MSB 0xfffd /*m 7/11 13:40 */
 #define RESET_VAL_LSB 0xfffc
 #include <inttypes.h>
 typedef struct mos6502{
