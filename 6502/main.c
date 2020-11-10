@@ -46,10 +46,10 @@ int main(int argc, char** argv) {
         cpu.ins = mem.ram[cpu.pc];
         // *********************** DECODE *********************** //
         set_de_instrucciones[cpu.ins](&cpu,&mem); //************** EXECUTE / WRITEBACK ******************///
-        //print_MOS6502(&cpu);
+        print_MOS6502(&cpu);
         if(cpu.sr & 0x10) break; //************ BANDERA BREAK ********************//
     }
     print_MOS6502(&cpu);
+   
    return (EXIT_SUCCESS);
 }
-

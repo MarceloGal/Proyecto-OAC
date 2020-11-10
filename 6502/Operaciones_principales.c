@@ -30,74 +30,34 @@ void reset_MOS6502(MOS6502* cpu, MEMORIA* mem){
     cpu->pc = (pch*256) + pcl;
 }
 
-/*
-void fetch_IF(MOS6502* cpu, MEMORIA* mem){
-    cpu->ins = mem->ram[cpu->pc];    
-}
-
-void decode_ID(MOS6502* cpu, MEMORIA* mem){
-    if(0xa9 == cpu->ins){
-        cpu->addr = cpu->pc+1;
-    }else if(cpu->ins == 0x8d){
-        cpu->addr = cpu->pc+1;
-    }
-    else if(cpu->ins == 0x69){
-        //*************************************
-        //          ADC
-        //*************************************
-        cpu->addr = cpu->pc+1;
-    }else if(cpu->ins == 0x69){
-        
-    }
-}
-
-void execute_EX(MOS6502* cpu, MEMORIA* mem){
-    if(0xa9 == cpu->ins){
-        LDA(cpu,mem);
-        cpu->pc += 2;
-    }else if(cpu->ins == 0x8d){
-        STA(cpu,mem);
-        cpu->pc += 3;
-    }else if(cpu->ins == 0xaa){
-        TAX(cpu,mem);
-        cpu->pc++;
-    }else if(cpu->ins == 0x8a){
-        TXA(cpu,mem);
-        cpu->pc++;
-    }else if(cpu->ins == 0xca){
-        DEX(cpu,mem);
-        cpu->pc++;
-    }else if(cpu->ins == 0xe8){
-        INX(cpu,mem);
-        cpu->pc++;
-    }else if(cpu->ins == 0xa8){
-        TAY(cpu,mem);
-        cpu->pc++;
-    }else if(cpu->ins == 0x98){
-        TYA(cpu,mem);
-        cpu->pc++;
-    }else if(cpu->ins == 0x88){
-        DEY(cpu,mem);
-        cpu->pc++;
-    }else if(cpu->ins == 0xc8){
-        INY(cpu,mem);
-        cpu->pc++;
-    }
-    
-}
-*/
-
 void print_MOS6502(MOS6502* cpu){
     printf("*******************************\n");
-    printf("Ac: %04x\n",cpu->a);
-    printf("Reg X: %04x\n",cpu->x);
-    printf("Reg Y: %04x\n",cpu->y);
-    printf("PC: %04x\n",cpu->pc);
-    printf("SP: %04x\n",cpu->sp);
-    printf("SR: %04x\n",cpu->sr);
+    printf("Ac:        %04x\n",cpu->a);
+    printf("Reg X:     %04x\n",cpu->x);
+    printf("Reg Y:     %04x\n",cpu->y);
+    printf("PC:        %04x\n",cpu->pc);
+    printf("SP:        %04x\n",cpu->sp);
+    printf("SR:        NV-BDIZC\n");
+    printf("           ");
+    printBits(sizeof(cpu->sr), &cpu->sr);
     printf("Reg. Inst: %04x\n",cpu->ins);
-    printf("Reg. Add: %04x\n",cpu->addr);    
+    printf("Reg. Add:  %04x\n",cpu->addr);    
     printf("*******************************\n");    
+}
+
+void printBits(size_t const size, void const * const ptr)
+{
+    unsigned char *b = (unsigned char*) ptr;
+    unsigned char byte;
+    int i, j;
+    
+    for (i = size-1; i >= 0; i--) {
+        for (j = 7; j >= 0; j--) {
+            byte = (b[i] >> j) & 1;
+            printf("%u", byte);
+        }
+    }
+    puts("");
 }
 
 void scan_codigo(MOS6502* cpu, MEMORIA* mem, const char* nombre){
@@ -110,6 +70,8 @@ void scan_codigo(MOS6502* cpu, MEMORIA* mem, const char* nombre){
             if(feof(archivo)) break;
             mem->ram[aux++] = var;
         }
+    }else{
+        printf("Terrible error de concepto.\n");
     }
 }
 

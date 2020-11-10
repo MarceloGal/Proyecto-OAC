@@ -207,9 +207,11 @@ void cargar_instrucciones(void (*set_de_instrucciones[0xFF])(MOS6502*,MEMORIA*))
 //////////////////
 
 void ADC_inmediate(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc+1;
     uint16_t aux = mem->ram[cpu->addr] + cpu->a;
     if(cpu->sr & 0x01) aux += 1;
+    //WRITEBACK
     if(aux & 0x100) cpu->sr |= 0x01; //MODIFICAR CARRY
     cpu->a = aux;
     if(cpu->a & 0x80) cpu->sr |= 0x80; //MODIFICAR NEGATIVE
@@ -219,9 +221,11 @@ void ADC_inmediate(MOS6502* cpu, MEMORIA* mem){
     cpu->pc += 2;
 }
 void ADC_zero_page(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc+1;
     uint16_t aux = mem->ram[mem->ram[cpu->addr]] + cpu->a;
     if(cpu->sr & 0x01) aux += 1;
+    //WRITEBACK
     if(aux & 0x100) cpu->sr |= 0x01; //MODIFICAR CARRY
     cpu->a = aux;
     if(cpu->a & 0x80) cpu->sr |= 0x80; //MODIFICAR NEGATIVE
@@ -231,9 +235,11 @@ void ADC_zero_page(MOS6502* cpu, MEMORIA* mem){
     cpu->pc += 2;
 }
 void ADC_zero_page_X(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc+1;
     uint16_t aux = mem->ram[mem->ram[cpu->addr] + cpu->x] + cpu->a;
     if(cpu->sr & 0x01) aux += 1;
+    //WRITEBACK
     if(aux & 0x100) cpu->sr |= 0x01; //MODIFICAR CARRY
     cpu->a = aux;
     if(cpu->a & 0x80) cpu->sr |= 0x80; //MODIFICAR NEGATIVE
@@ -243,9 +249,11 @@ void ADC_zero_page_X(MOS6502* cpu, MEMORIA* mem){
     cpu->pc += 2;    
 }
 void ADC_absolute(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc+1;
     uint16_t aux = mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr]] + cpu->a;
     if(cpu->sr & 0x01) aux += 1;
+    //WRITEBACK
     if(aux & 0x100) cpu->sr |= 0x01; //MODIFICAR CARRY
     cpu->a = aux;
     if(cpu->a & 0x80) cpu->sr |= 0x80; //MODIFICAR NEGATIVE
@@ -255,9 +263,11 @@ void ADC_absolute(MOS6502* cpu, MEMORIA* mem){
     cpu->pc += 3;
 }
 void ADC_absolute_X(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc+1;
     uint16_t aux = mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr] + cpu->x] + cpu->a;
     if(cpu->sr & 0x01) aux += 1;
+    //WRITEBACK
     if(aux & 0x100) cpu->sr |= 0x01; //MODIFICAR CARRY
     cpu->a = aux;
     if(cpu->a & 0x80) cpu->sr |= 0x80; //MODIFICAR NEGATIVE
@@ -267,9 +277,11 @@ void ADC_absolute_X(MOS6502* cpu, MEMORIA* mem){
     cpu->pc += 3;
 }
 void ADC_absolute_Y(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc+1;
     uint16_t aux = mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr] + cpu->y] + cpu->a;
     if(cpu->sr & 0x01) aux += 1;
+    //WRITEBACK
     if(aux & 0x100) cpu->sr |= 0x01; //MODIFICAR CARRY
     cpu->a = aux;
     if(cpu->a & 0x80) cpu->sr |= 0x80; //MODIFICAR NEGATIVE
@@ -279,9 +291,11 @@ void ADC_absolute_Y(MOS6502* cpu, MEMORIA* mem){
     cpu->pc += 3;
 }
 void ADC_indirect_X(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc+1;
     uint16_t aux = mem->ram[mem->ram[cpu->addr] + cpu->x] + cpu->a;
     if(cpu->sr & 0x01) aux += 1;
+    //WRITEBACK
     if(aux & 0x100) cpu->sr |= 0x01; //MODIFICAR CARRY
     cpu->a = aux;
     if(cpu->a & 0x80) cpu->sr |= 0x80; //MODIFICAR NEGATIVE
@@ -291,9 +305,11 @@ void ADC_indirect_X(MOS6502* cpu, MEMORIA* mem){
     cpu->pc += 2;   
 }
 void ADC_indirect_Y(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc+1;
     uint16_t aux = mem->ram[mem->ram[cpu->addr] + cpu->y] + cpu->a;
     if(cpu->sr & 0x01) aux += 1;
+    //WRITEBACK
     if(aux & 0x100) cpu->sr |= 0x01; //MODIFICAR CARRY
     cpu->a = aux;
     if(cpu->a & 0x80) cpu->sr |= 0x80; //MODIFICAR NEGATIVE
@@ -307,8 +323,10 @@ void ADC_indirect_Y(MOS6502* cpu, MEMORIA* mem){
 //  AND: // N/Z  
 //////////////////////
 void AND_inmediate(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc + 1;
     cpu->a &= mem->ram[cpu->addr];
+    //WRITEBACK
     if(!cpu->a) cpu->sr |= 0x02; //MODIFICAR ZERO
     else cpu->sr &= 0xFD;
     if(cpu->a & 0x80) cpu->sr |= 0x80; //MODIFICAR NEGATIVE
@@ -316,8 +334,9 @@ void AND_inmediate(MOS6502* cpu, MEMORIA* mem){
     cpu->pc += 2;
 }
 void AND_zero_page(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc + 1;
-    cpu->a &= mem->ram[mem->ram[cpu->addr]];
+    cpu->a &= mem->ram[mem->ram[cpu->addr]]; //WRITEBACK
     if(!cpu->a) cpu->sr |= 0x02; //MODIFICAR ZERO
     else cpu->sr &= 0xFD;
     if(cpu->a & 0x80) cpu->sr |= 0x80; //MODIFICAR NEGATIVE
@@ -325,8 +344,10 @@ void AND_zero_page(MOS6502* cpu, MEMORIA* mem){
     cpu->pc += 2;
 }
 void AND_zero_page_X(MOS6502* cpu, MEMORIA* mem){
-    cpu->addr = cpu->pc + 1;
-    cpu->a &= mem->ram[mem->ram[cpu->addr] + cpu->x];
+    //EXECUTE
+    cpu->addr = cpu->pc + 1; 
+    cpu->a &= mem->ram[mem->ram[cpu->addr] + cpu->x]; 
+    //WRITEBACK
     if(!cpu->a) cpu->sr |= 0x02; //MODIFICAR ZERO
     else cpu->sr &= 0xFD;
     if(cpu->a & 0x80) cpu->sr |= 0x80; //MODIFICAR NEGATIVE
@@ -334,8 +355,10 @@ void AND_zero_page_X(MOS6502* cpu, MEMORIA* mem){
     cpu->pc += 2;
 }
 void AND_absolute(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc + 1;
     cpu->a &= mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr]];
+    //WRITEBACK
     if(!cpu->a) cpu->sr |= 0x02; //MODIFICAR ZERO
     else cpu->sr &= 0xFD;
     if(cpu->a & 0x80) cpu->sr |= 0x80; //MODIFICAR NEGATIVE
@@ -343,8 +366,10 @@ void AND_absolute(MOS6502* cpu, MEMORIA* mem){
     cpu->pc += 3;
 }
 void AND_absolute_X(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc + 1;
     cpu->a &= mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr] + cpu->x];
+    //WRITEBACK
     if(!cpu->a) cpu->sr |= 0x02; //MODIFICAR ZERO
     else cpu->sr &= 0xFD;
     if(cpu->a & 0x80) cpu->sr |= 0x80; //MODIFICAR NEGATIVE
@@ -352,8 +377,10 @@ void AND_absolute_X(MOS6502* cpu, MEMORIA* mem){
     cpu->pc += 3;
 }
 void AND_absolute_Y(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc + 1;
     cpu->a &= mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr] + cpu->y];
+    //WRITEBACK
     if(!cpu->a) cpu->sr |= 0x02; //MODIFICAR ZERO
     else cpu->sr &= 0xFD;
     if(cpu->a & 0x80) cpu->sr |= 0x80; //MODIFICAR NEGATIVE
@@ -361,8 +388,10 @@ void AND_absolute_Y(MOS6502* cpu, MEMORIA* mem){
     cpu->pc += 3;
 }
 void AND_indirect_X(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc + 1;
     cpu->a &= mem->ram[mem->ram[cpu->addr] + cpu->x];
+    //WRITEBACK
     if(!cpu->a) cpu->sr |= 0x02; //MODIFICAR ZERO
     else cpu->sr &= 0xFD;
     if(cpu->a & 0x80) cpu->sr |= 0x80; //MODIFICAR NEGATIVE
@@ -370,8 +399,10 @@ void AND_indirect_X(MOS6502* cpu, MEMORIA* mem){
     cpu->pc += 2;
 }
 void AND_indirect_Y(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc + 1;
     cpu->a &= mem->ram[mem->ram[cpu->addr] + cpu->y];
+    //EXECUTE
     if(!cpu->a) cpu->sr |= 0x02; //MODIFICAR ZERO
     else cpu->sr &= 0xFD;
     if(cpu->a & 0x80) cpu->sr |= 0x80; //MODIFICAR NEGATIVE
@@ -383,6 +414,7 @@ void AND_indirect_Y(MOS6502* cpu, MEMORIA* mem){
 ///     ASL/ C-N-Z
 /////////////////////////
 void ASL_accumulador(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     uint8_t aux = cpu->a&0x80;
     aux >>= 7;
     if( aux != cpu->pc&0x01){
@@ -395,6 +427,7 @@ void ASL_accumulador(MOS6502* cpu, MEMORIA* mem){
     }
     //MODIFICAR OPERANDO
     cpu->a <<= 1;
+    //WRITEBACK
     if(!cpu->a) cpu->sr |= 0x02; //MODIFICAR ZERO
     else cpu->sr &= 0xFD;
     if(cpu->a & 0x80 ) cpu->sr |= 0x80;
@@ -402,6 +435,7 @@ void ASL_accumulador(MOS6502* cpu, MEMORIA* mem){
     cpu->pc++;
 }
 void ASL_zero_page(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc+1;
     uint8_t aux = (mem->ram[mem->ram[cpu->addr]])&0x80;
     aux >>=7;
@@ -414,6 +448,7 @@ void ASL_zero_page(MOS6502* cpu, MEMORIA* mem){
         }
     }
     mem->ram[mem->ram[cpu->addr]] <<= 1;
+    //WRITEBACK
     if(!mem->ram[mem->ram[cpu->addr]]) cpu->sr |= 0x02; //MODIFICAR ZERO
     else cpu->sr &= 0xFD;
     if(mem->ram[mem->ram[cpu->addr]] & 0x80 ) cpu->sr |= 0x80; //MODIFICAR NEGATIVE
@@ -422,6 +457,7 @@ void ASL_zero_page(MOS6502* cpu, MEMORIA* mem){
     cpu->pc+=2;
 }
 void ASL_zero_page_X(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc+1;
     uint8_t aux = (mem->ram[mem->ram[cpu->addr]+cpu->x])&0x80;
     aux >>=7;
@@ -434,7 +470,7 @@ void ASL_zero_page_X(MOS6502* cpu, MEMORIA* mem){
         }
     }
     mem->ram[mem->ram[cpu->addr] + cpu->x] <<= 1;
-    
+    //WRITEBACK
     if(!mem->ram[mem->ram[cpu->addr]+cpu->x]) cpu->sr |= 0x02; //MODIFICAR ZERO
     else cpu->sr &= 0xFD;
     if(mem->ram[mem->ram[cpu->addr]+cpu->x] & 0x80 ) cpu->sr |= 0x80; //MODIFICAR NEGATIVE
@@ -443,6 +479,7 @@ void ASL_zero_page_X(MOS6502* cpu, MEMORIA* mem){
     cpu->pc+=2;
 }
 void ASL_absolute(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc+1;
     uint8_t aux = (mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr]])&0x80;
     aux >>=7;
@@ -455,7 +492,7 @@ void ASL_absolute(MOS6502* cpu, MEMORIA* mem){
         }
     }
     mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr]] <<= 1;
-    
+    //WRITEBACK
     if(!mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr]]) cpu->sr |= 0x02; //MODIFICAR ZERO
     else cpu->sr &= 0xFD;
     if((mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr]]) & 0x80 ) cpu->sr |= 0x80; //MODIFICAR NEGATIVE
@@ -464,6 +501,7 @@ void ASL_absolute(MOS6502* cpu, MEMORIA* mem){
     cpu->pc+=3;
 }
 void ASL_absolute_X(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc+1;
     uint8_t aux = (mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr] + cpu->x])&0x80;
     aux >>=7;
@@ -476,12 +514,11 @@ void ASL_absolute_X(MOS6502* cpu, MEMORIA* mem){
         }
     }
     mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr] + cpu->x] <<= 1;
-    
+    //WRITEBACK
     if(!mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr] + cpu->x]) cpu->sr |= 0x02; //MODIFICAR ZERO
     else cpu->sr &= 0xFD;
     if(mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr] + cpu->x] & 0x80 ) cpu->sr |= 0x80; //MODIFICAR NEGATIVE
     else cpu->sr &= 0x7F;
-    
     cpu->pc+=3;
 }
 ///////////
@@ -498,6 +535,7 @@ void BIT_absolute(MOS6502* cpu, MEMORIA* mem){
 ///////////
 void BPL(MOS6502* cpu, MEMORIA* mem){
     //BRANCH Z = 0
+    //WRITEBACK
     cpu->addr = cpu->pc + 1;
     if(cpu->sr & 0x02){
         cpu->pc += 2;
@@ -505,22 +543,23 @@ void BPL(MOS6502* cpu, MEMORIA* mem){
         if(mem->ram[cpu->addr]&0x80){
             uint16_t aux = 0xFF00;
             aux += mem->ram[cpu->addr];
-            cpu->pc += aux;
+            cpu->pc += aux + 2;
         }else{
-            cpu->pc += mem->ram[cpu->addr];
+            cpu->pc += mem->ram[cpu->addr] + 2;
         }
     }
 }
 void BMI(MOS6502* cpu, MEMORIA* mem){
     //BRANCH N = 1
+    //WRITEBACK
     cpu->addr = cpu->pc + 1;
     if(cpu->sr & 0x80){
         if(mem->ram[cpu->addr]&0x80){
             uint16_t aux = 0xFF00;
             aux += mem->ram[cpu->addr];
-            cpu->pc += aux;
+            cpu->pc += aux+2;
         }else{
-            cpu->pc += mem->ram[cpu->addr];
+            cpu->pc += mem->ram[cpu->addr]+2;
         }
     }else{
         cpu->pc += 2;
@@ -528,6 +567,7 @@ void BMI(MOS6502* cpu, MEMORIA* mem){
 }
 void BVC(MOS6502* cpu, MEMORIA* mem){
     //BRANCH OV = 0
+    //WRITEBACK
     cpu->addr = cpu->pc + 1;
     if(cpu->sr & 0x70){
         cpu->pc += 2;
@@ -535,22 +575,23 @@ void BVC(MOS6502* cpu, MEMORIA* mem){
         if(mem->ram[cpu->addr]&0x80){
             uint16_t aux = 0xFF00;
             aux += mem->ram[cpu->addr];
-            cpu->pc += aux;
+            cpu->pc += aux+2;
         }else{
-            cpu->pc += mem->ram[cpu->addr];
+            cpu->pc += mem->ram[cpu->addr]+2;
         }
     }    
 }
 void BVS(MOS6502* cpu, MEMORIA* mem){
     //BRANCH OV = 1
+    //WRITEBACK
     cpu->addr = cpu->pc + 1;
     if(cpu->sr & 0x70){
         if(mem->ram[cpu->addr]&0x80){
             uint16_t aux = 0xFF00;
             aux += mem->ram[cpu->addr];
-            cpu->pc += aux;
+            cpu->pc += aux+2;
         }else{
-            cpu->pc += mem->ram[cpu->addr];
+            cpu->pc += mem->ram[cpu->addr]+2;
         }
     }else{
         cpu->pc += 2;
@@ -558,6 +599,7 @@ void BVS(MOS6502* cpu, MEMORIA* mem){
 }
 void BCC(MOS6502* cpu, MEMORIA* mem){
     //BRANCH C = 0
+    //WRITEBACK
     cpu->addr = cpu->pc + 1;
     if(cpu->sr & 0x01){
         cpu->pc += 2;
@@ -565,22 +607,23 @@ void BCC(MOS6502* cpu, MEMORIA* mem){
         if(mem->ram[cpu->addr]&0x80){
             uint16_t aux = 0xFF00;
             aux += mem->ram[cpu->addr];
-            cpu->pc += aux;
+            cpu->pc += aux+2;
         }else{
-            cpu->pc += mem->ram[cpu->addr];
+            cpu->pc += mem->ram[cpu->addr]+2;
         }
     }
 }
 void BCS(MOS6502* cpu, MEMORIA* mem){
     //BRANCH C = 1
+    //WRITEBACK
     cpu->addr = cpu->pc + 1;
     if(cpu->sr & 0x01){
         if(mem->ram[cpu->addr]&0x80){
             uint16_t aux = 0xFF00;
             aux += mem->ram[cpu->addr];
-            cpu->pc += aux;
+            cpu->pc += aux+2;
         }else{
-            cpu->pc += mem->ram[cpu->addr];
+            cpu->pc += mem->ram[cpu->addr]+2;
         }
     }else{
         cpu->pc += 2;
@@ -588,6 +631,7 @@ void BCS(MOS6502* cpu, MEMORIA* mem){
 }
 void BNE(MOS6502* cpu, MEMORIA* mem){
     //BRANCH Z = 0
+    //WRITEBACK
     cpu->addr = cpu->pc + 1;
     if(cpu->sr & 0x02){
         cpu->pc += 2;
@@ -595,22 +639,23 @@ void BNE(MOS6502* cpu, MEMORIA* mem){
         if(mem->ram[cpu->addr]&0x80){
             uint16_t aux = 0xFF00;
             aux += mem->ram[cpu->addr];
-            cpu->pc += aux;
+            cpu->pc += aux+2;
         }else{
-            cpu->pc += mem->ram[cpu->addr];
+            cpu->pc += mem->ram[cpu->addr]+2;
         }
     }
 }
 void BEQ(MOS6502* cpu, MEMORIA* mem){
     //BRANCH Z = 1
+    //WRITEBACK
     cpu->addr = cpu->pc + 1;
     if(cpu->sr & 0x02){
         if(mem->ram[cpu->addr]&0x80){
             uint16_t aux = 0xFF00;
             aux += mem->ram[cpu->addr];
-            cpu->pc += aux;
+            cpu->pc += aux+2;
         }else{
-            cpu->pc += mem->ram[cpu->addr];
+            cpu->pc += mem->ram[cpu->addr]+2;
         }
     }else{
         cpu->pc += 2;
@@ -618,7 +663,9 @@ void BEQ(MOS6502* cpu, MEMORIA* mem){
 }
 
 void BRK(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->sr |= 0x10;
+    //WRITEBACK
     cpu->pc++;
 }
 
@@ -626,9 +673,11 @@ void BRK(MOS6502* cpu, MEMORIA* mem){
 //  CMP // N / Z / C
 ///////////////
 void CMP_inmediate(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc+1;
     uint16_t aux = cpu->a;
     aux -= mem->ram[cpu->addr];
+    //WRITEBACK
     if(!aux) cpu->sr |= 0x02; //ZERO = 1
     else cpu->sr &= 0xFD;
     if(aux & 0x80) cpu->sr |= 0x80; //NEGATIVE = 1;
@@ -638,9 +687,11 @@ void CMP_inmediate(MOS6502* cpu, MEMORIA* mem){
     cpu->pc += 2;
 }
 void CMP_zero_page(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc+1;
     uint16_t aux = cpu->a;
     aux -= mem->ram[mem->ram[cpu->addr]];
+    //WRITEBACK
     if(!aux) cpu->sr |= 0x02; //ZERO = 1
     else cpu->sr &= 0xFD;
     if(aux & 0x80) cpu->sr |= 0x80; //NEGATIVE = 1;
@@ -650,9 +701,11 @@ void CMP_zero_page(MOS6502* cpu, MEMORIA* mem){
     cpu->pc += 2;    
 }
 void CMP_zero_page_X(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc+1;
     uint16_t aux = cpu->a;
     aux -= mem->ram[mem->ram[cpu->addr] + cpu->x];
+    //WRITEBACK
     if(!aux) cpu->sr |= 0x02; //ZERO = 1
     else cpu->sr &= 0xFD;
     if(aux & 0x80) cpu->sr |= 0x80; //NEGATIVE = 1;
@@ -662,9 +715,11 @@ void CMP_zero_page_X(MOS6502* cpu, MEMORIA* mem){
     cpu->pc += 2;        
 }
 void CMP_absolute(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc+1;
     uint16_t aux = cpu->a;
     aux -= mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr]];
+    //WRITEBACK
     if(!aux) cpu->sr |= 0x02; //ZERO = 1
     else cpu->sr &= 0xFD;
     if(aux & 0x80) cpu->sr |= 0x80; //NEGATIVE = 1;
@@ -674,9 +729,11 @@ void CMP_absolute(MOS6502* cpu, MEMORIA* mem){
     cpu->pc += 3;        
 }
 void CMP_absolute_X(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc+1;
     uint16_t aux = cpu->a;
     aux -= mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr] + cpu->x];
+    //WRITEBACK
     if(!aux) cpu->sr |= 0x02; //ZERO = 1
     else cpu->sr &= 0xFD;
     if(aux & 0x80) cpu->sr |= 0x80; //NEGATIVE = 1;
@@ -686,9 +743,11 @@ void CMP_absolute_X(MOS6502* cpu, MEMORIA* mem){
     cpu->pc += 3;       
 }
 void CMP_absolute_Y(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc+1;
     uint16_t aux = cpu->a;
     aux -= mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr] + cpu->y];
+    //WRITEBACK
     if(!aux) cpu->sr |= 0x02; //ZERO = 1
     else cpu->sr &= 0xFD;
     if(aux & 0x80) cpu->sr |= 0x80; //NEGATIVE = 1;
@@ -698,9 +757,11 @@ void CMP_absolute_Y(MOS6502* cpu, MEMORIA* mem){
     cpu->pc += 3;       
 }
 void CMP_indirect_X(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc+1;
     uint16_t aux = cpu->a;
     aux -= mem->ram[mem->ram[cpu->addr] + cpu->x];
+    //WRITEBACK
     if(!aux) cpu->sr |= 0x02; //ZERO = 1
     else cpu->sr &= 0xFD;
     if(aux & 0x80) cpu->sr |= 0x80; //NEGATIVE = 1;
@@ -710,9 +771,11 @@ void CMP_indirect_X(MOS6502* cpu, MEMORIA* mem){
     cpu->pc += 2;        
 }
 void CMP_indirect_Y(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc+1;
     uint16_t aux = cpu->a;
     aux -= mem->ram[mem->ram[cpu->addr] + cpu->y];
+    //WRITEBACK
     if(!aux) cpu->sr |= 0x02; //ZERO = 1
     else cpu->sr &= 0xFD;
     if(aux & 0x80) cpu->sr |= 0x80; //NEGATIVE = 1;
@@ -725,9 +788,11 @@ void CMP_indirect_Y(MOS6502* cpu, MEMORIA* mem){
 //  CPX
 ///////////
 void CPX_inmediate(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc+1;
     uint16_t aux = cpu->x;
     aux -= mem->ram[cpu->addr];
+    //WRITEBACK
     if(!aux) cpu->sr |= 0x02; //ZERO = 1
     else cpu->sr &= 0xFD;
     if(aux & 0x80) cpu->sr |= 0x80; //NEGATIVE = 1;
@@ -737,9 +802,11 @@ void CPX_inmediate(MOS6502* cpu, MEMORIA* mem){
     cpu->pc += 2;    
 }
 void CPX_zero_page(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc+1;
     uint16_t aux = cpu->x;
     aux -= mem->ram[mem->ram[cpu->addr]];
+    //WRITEBACK
     if(!aux) cpu->sr |= 0x02; //ZERO = 1
     else cpu->sr &= 0xFD;
     if(aux & 0x80) cpu->sr |= 0x80; //NEGATIVE = 1;
@@ -749,9 +816,11 @@ void CPX_zero_page(MOS6502* cpu, MEMORIA* mem){
     cpu->pc += 2;     
 }
 void CPX_absolute(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc+1;
     uint16_t aux = cpu->x;
     aux -= mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr]];
+    //WRITEBACK
     if(!aux) cpu->sr |= 0x02; //ZERO = 1
     else cpu->sr &= 0xFD;
     if(aux & 0x80) cpu->sr |= 0x80; //NEGATIVE = 1;
@@ -764,9 +833,11 @@ void CPX_absolute(MOS6502* cpu, MEMORIA* mem){
 //  CPY
 ////////////
 void CPY_inmediate(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc+1;
     uint16_t aux = cpu->y;
     aux -= mem->ram[cpu->addr];
+    //WRITEBACK
     if(!aux) cpu->sr |= 0x02; //ZERO = 1
     else cpu->sr &= 0xFD;
     if(aux & 0x80) cpu->sr |= 0x80; //NEGATIVE = 1;
@@ -776,9 +847,11 @@ void CPY_inmediate(MOS6502* cpu, MEMORIA* mem){
     cpu->pc += 2;        
 }
 void CPY_zero_page(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc+1;
     uint16_t aux = cpu->y;
     aux -= mem->ram[mem->ram[cpu->addr]];
+    //WRITEBACK
     if(!aux) cpu->sr |= 0x02; //ZERO = 1
     else cpu->sr &= 0xFD;
     if(aux & 0x80) cpu->sr |= 0x80; //NEGATIVE = 1;
@@ -788,9 +861,11 @@ void CPY_zero_page(MOS6502* cpu, MEMORIA* mem){
     cpu->pc += 2;     
 }
 void CPY_absolute(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc+1;
     uint16_t aux = cpu->y;
     aux -= mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr]];
+    //WRITEBACK
     if(!aux) cpu->sr |= 0x02; //ZERO = 1
     else cpu->sr &= 0xFD;
     if(aux & 0x80) cpu->sr |= 0x80; //NEGATIVE = 1;
@@ -804,8 +879,10 @@ void CPY_absolute(MOS6502* cpu, MEMORIA* mem){
 //      DEC
 ////////////////////////
 void DEC_zero_page(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc+1;
     mem->ram[mem->ram[cpu->addr]]--;
+    //WRITEBACK
     //MODIFICAR BANDERAS
     uint8_t aux = mem->ram[mem->ram[cpu->addr]];
     if(!aux) cpu->sr|= 0x02; //MODIFICAR ZERO
@@ -815,9 +892,10 @@ void DEC_zero_page(MOS6502* cpu, MEMORIA* mem){
     cpu->pc += 2;
 }
 void DEC_zero_page_X(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc+1;
     mem->ram[mem->ram[cpu->addr] + cpu->x]--;
-    //MODIFICAR BANDERAS
+    //WRITEBACK
     uint8_t aux = mem->ram[mem->ram[cpu->addr] + cpu->x];
     if(!aux) cpu->sr|= 0x02; //MODIFICAR ZERO
     else cpu->sr &= 0xFD;
@@ -826,9 +904,10 @@ void DEC_zero_page_X(MOS6502* cpu, MEMORIA* mem){
     cpu->pc += 2;
 }
 void DEC_absolute(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc+1;
     mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr]]--;
-    //MODIFICAR BANDERAS
+    //WRITEBACK
     uint8_t aux = mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr]];
     if(!aux) cpu->sr|= 0x02; //MODIFICAR ZERO
     else cpu->sr &= 0xFD;
@@ -837,9 +916,10 @@ void DEC_absolute(MOS6502* cpu, MEMORIA* mem){
     cpu->pc += 3;
 }
 void DEC_absolute_X(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc+1;
     mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr] + cpu->x]--;
-    //MODIFICAR BANDERAS
+    //WRITEBACK
     uint8_t aux = mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr] + cpu->x];
     if(!aux) cpu->sr|= 0x02; //MODIFICAR ZERO
     else cpu->sr &= 0xFD;
@@ -851,20 +931,21 @@ void DEC_absolute_X(MOS6502* cpu, MEMORIA* mem){
 //  EOR // N - Z
 ////////////
 void EOR_inmediate(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc + 1;
     cpu->a ^= mem->ram[cpu->addr];
-    
+    //WRITEBACK
     if(!cpu->a) cpu->sr |= 0x02; //MODIFICAR ZERO
     else cpu->sr &= 0xFD;
     if(cpu->a & 0x80 ) cpu->sr |= 0x80; //MODIFICAR NEGATIVE
     else cpu->sr &= 0x7F;
-    
     cpu->pc += 2;
 }
 void EOR_zero_page(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc + 1;
     cpu->a ^= mem->ram[mem->ram[cpu->addr]];
-    
+    //WRITEBACK
     if(!cpu->a) cpu->sr |= 0x02; //MODIFICAR ZERO
     else cpu->sr &= 0xFD;
     if(cpu->a & 0x80 ) cpu->sr |= 0x80; //MODIFICAR NEGATIVE
@@ -873,99 +954,106 @@ void EOR_zero_page(MOS6502* cpu, MEMORIA* mem){
     cpu->pc += 2;    
 }
 void EOR_zero_page_X(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc + 1;
     cpu->a ^= mem->ram[mem->ram[cpu->addr] + cpu->x];
-    
+    //WRITEBACK
     if(!cpu->a) cpu->sr |= 0x02; //MODIFICAR ZERO
     else cpu->sr &= 0xFD;
     if(cpu->a & 0x80 ) cpu->sr |= 0x80; //MODIFICAR NEGATIVE
     else cpu->sr &= 0x7F;
-    
     cpu->pc += 2;
 }
 void EOR_absolute(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc + 1;
     cpu->a ^= mem->ram[mem->ram[cpu->addr + 1]*256 + mem->ram[cpu->addr]];
-    
+    //WRITEBACK
     if(!cpu->a) cpu->sr |= 0x02; //MODIFICAR ZERO
     else cpu->sr &= 0xFD;
     if(cpu->a & 0x80 ) cpu->sr |= 0x80; //MODIFICAR NEGATIVE
     else cpu->sr &= 0x7F;
-    
     cpu->pc += 3;
 }
 void EOR_absolute_X(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc + 1;
     cpu->a ^= mem->ram[mem->ram[cpu->addr + 1]*256 + mem->ram[cpu->addr] + cpu->x];
-    
+    //WRITEBACK
     if(!cpu->a) cpu->sr |= 0x02; //MODIFICAR ZERO
     else cpu->sr &= 0xFD;
     if(cpu->a & 0x80 ) cpu->sr |= 0x80; //MODIFICAR NEGATIVE
     else cpu->sr &= 0x7F;
-    
     cpu->pc += 3;    
 }
 void EOR_absolute_Y(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc + 1;
     cpu->a ^= mem->ram[mem->ram[cpu->addr + 1]*256 + mem->ram[cpu->addr] + cpu->y];
-    
+    //WRITEBACK
     if(!cpu->a) cpu->sr |= 0x02; //MODIFICAR ZERO
     else cpu->sr &= 0xFD;
     if(cpu->a & 0x80 ) cpu->sr |= 0x80; //MODIFICAR NEGATIVE
     else cpu->sr &= 0x7F;
-    
     cpu->pc += 3;        
 }
 void EOR_indirect_X(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc + 1;
     cpu->a ^= mem->ram[mem->ram[cpu->addr] + cpu->x];
-    
+    //WRITEBACK
     if(!cpu->a) cpu->sr |= 0x02; //MODIFICAR ZERO
     else cpu->sr &= 0xFD;
     if(cpu->a & 0x80 ) cpu->sr |= 0x80; //MODIFICAR NEGATIVE
     else cpu->sr &= 0x7F;
-    
     cpu->pc += 2;    
 }
 void EOR_indirect_Y(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTTE
     cpu->addr = cpu->pc + 1;
     cpu->a ^= mem->ram[mem->ram[cpu->addr] + cpu->y];
-    
+    //WRITEBACK
     if(!cpu->a) cpu->sr |= 0x02; //MODIFICAR ZERO
     else cpu->sr &= 0xFD;
     if(cpu->a & 0x80 ) cpu->sr |= 0x80; //MODIFICAR NEGATIVE
     else cpu->sr &= 0x7F;
-    
     cpu->pc += 2;
 }
 //////////////////
 //  
 //////////////////
 void CLC(MOS6502* cpu, MEMORIA* mem){
+    //WRITEBACK
     cpu->sr &= 0xFE;
     cpu->pc++;
 }
 void SEC(MOS6502* cpu, MEMORIA* mem){
+    //WRITEBACK
     cpu->sr |= 0x01;
     cpu->pc++;
 }
 void CLI(MOS6502* cpu, MEMORIA* mem){
+    //WRITEBACK
     cpu->sr &= 0xFB;
     cpu->pc++;
 }
 void SEI(MOS6502* cpu, MEMORIA* mem){
+    //WRITEBACK
     cpu->sr |= 0x04;
     cpu->pc++;
 }
 void CLV(MOS6502* cpu, MEMORIA* mem){
+    //WRITEBACK
     cpu->sr &= 0xBF;
     cpu->pc++;
 }
 void CLD(MOS6502* cpu, MEMORIA* mem){
+    //WRITEBACK
     cpu->sr &= 0xF7;
     cpu->pc++;
 }
 void SED(MOS6502* cpu, MEMORIA* mem){
+    //WRITEBACK
     cpu->sr |= 0x08;
     cpu->pc++;
 }
@@ -973,9 +1061,10 @@ void SED(MOS6502* cpu, MEMORIA* mem){
 //     INC
 ////////////////////////
 void INC_zero_page(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc+1;
     uint8_t aux = ++mem->ram[mem->ram[cpu->addr]];
-    //BANDERAS
+    //WRITEBACK
     if(!aux) cpu->sr|= 0x02; //MODIFICAR ZERO
     else cpu->sr &= 0xFD;
     if(aux & 0x80) cpu->sr|= 0x80; //MODIFICAR NEGATIVE
@@ -983,9 +1072,10 @@ void INC_zero_page(MOS6502* cpu, MEMORIA* mem){
     cpu->pc += 2;
 }
 void INC_zero_page_X(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc+1;
     uint8_t aux = ++mem->ram[mem->ram[cpu->addr] + cpu->x];
-    //BANDERAS
+    //WRITEBACK
     if(!aux) cpu->sr|= 0x02; //MODIFICAR ZERO
     else cpu->sr &= 0xFD;
     if(aux & 0x80) cpu->sr|= 0x80; //MODIFICAR NEGATIVE
@@ -993,9 +1083,10 @@ void INC_zero_page_X(MOS6502* cpu, MEMORIA* mem){
     cpu->pc += 2;
 }
 void INC_absolute(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc+1;
     uint8_t aux = ++mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr]];
-    //BANDERAS
+    //WRITEBACK
     if(!aux) cpu->sr|= 0x02; //MODIFICAR ZERO
     else cpu->sr &= 0xFD;
     if(aux & 0x80) cpu->sr|= 0x80; //MODIFICAR NEGATIVE
@@ -1003,9 +1094,10 @@ void INC_absolute(MOS6502* cpu, MEMORIA* mem){
     cpu->pc += 3;
 }
 void INC_absolute_X(MOS6502* cpu, MEMORIA* mem){
+    //EXECUTE
     cpu->addr = cpu->pc+1;
     uint8_t aux = ++mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr] + cpu->x];
-    //BANDERAS
+    //WRITEBACK
     if(!aux) cpu->sr|= 0x02; //MODIFICAR ZERO
     else cpu->sr &= 0xFD;
     if(aux & 0x80) cpu->sr|= 0x80; //MODIFICAR NEGATIVE
@@ -1018,10 +1110,12 @@ void INC_absolute_X(MOS6502* cpu, MEMORIA* mem){
 ////////////////////////
 void JMP_absolute(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc+1;
+    //WRITEBACK
     cpu->pc = mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr];
 }
 void JMP_indirect(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc+1;
+    //WRITEBACK
     cpu->pc = mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr];
 }
 
@@ -1029,8 +1123,13 @@ void JMP_indirect(MOS6502* cpu, MEMORIA* mem){
 //     JSR
 ////////////////////////
 void JSR_absolute(MOS6502* cpu, MEMORIA* mem){
+    //WRITEBACK
     cpu->addr = cpu->pc+1;
-    //FALTA PUSHEAR XD LA PROX DIRECCION 
+    uint16_t aux_pc = cpu->pc + 2;
+    uint8_t aux_l = aux_pc&0x00FF;
+    uint8_t aux_m = aux_pc>>=8;
+    mem->ram[cpu->sp--] = aux_m;
+    mem->ram[cpu->sp--] = aux_l;
     cpu->pc = mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr];
 }
 
@@ -1039,8 +1138,8 @@ void JSR_absolute(MOS6502* cpu, MEMORIA* mem){
 ////////////////////////
 void LDA_inmediate(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc+1;
+    //WRITEBACK
     cpu->a = mem->ram[cpu->addr];
-    //BANDERAS
     if(!cpu->a) cpu->sr|= 0x02;
     else cpu->sr &= 0xFD;
     if(cpu->a & 0x80) cpu->sr|= 0x80;
@@ -1050,8 +1149,8 @@ void LDA_inmediate(MOS6502* cpu, MEMORIA* mem){
 
 void LDA_zero_page(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc+1;
+    //WRITEBACK
     cpu->a = mem->ram[mem->ram[cpu->addr]];
-    //BANDERAS
     if(!cpu->a) cpu->sr|= 0x02;
     else cpu->sr &= 0xFD;
     if(cpu->a & 0x80) cpu->sr|= 0x80;
@@ -1061,8 +1160,8 @@ void LDA_zero_page(MOS6502* cpu, MEMORIA* mem){
 
 void LDA_zero_page_X(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc+1;
+    //WRITEBACK
     cpu->a = mem->ram[mem->ram[cpu->addr]+cpu->x];
-    //BANDERAS
     if(!cpu->a) cpu->sr|= 0x02;
     else cpu->sr &= 0xFD;
     if(cpu->a & 0x80) cpu->sr|= 0x80;
@@ -1072,8 +1171,8 @@ void LDA_zero_page_X(MOS6502* cpu, MEMORIA* mem){
 
 void LDA_absolute(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc+1;
+    //WRITEBACK
     cpu->a = mem->ram[(mem->ram[cpu->addr+1])*256 + mem->ram[cpu->addr]];
-    //BANDERAS
     if(!cpu->a) cpu->sr|= 0x02;
     else cpu->sr &= 0xFD;
     if(cpu->a & 0x80) cpu->sr|= 0x80;
@@ -1083,8 +1182,8 @@ void LDA_absolute(MOS6502* cpu, MEMORIA* mem){
 
 void LDA_absolute_X(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc+1;
+    //WRITEBACK
     cpu->a = mem->ram[(mem->ram[cpu->addr+1])*256 + mem->ram[cpu->addr] + cpu->x];
-    //BANDERAS
     if(!cpu->a) cpu->sr|= 0x02;
     else cpu->sr &= 0xFD;
     if(cpu->a & 0x80) cpu->sr|= 0x80;
@@ -1094,8 +1193,8 @@ void LDA_absolute_X(MOS6502* cpu, MEMORIA* mem){
 
 void LDA_absolute_Y(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc+1;
+    //WRITEBACK
     cpu->a = mem->ram[(mem->ram[cpu->addr+1])*256 + mem->ram[cpu->addr] + cpu->y];
-    //BANDERAS
     if(!cpu->a) cpu->sr|= 0x02;
     else cpu->sr &= 0xFD;
     if(cpu->a & 0x80) cpu->sr|= 0x80;
@@ -1105,8 +1204,8 @@ void LDA_absolute_Y(MOS6502* cpu, MEMORIA* mem){
 
 void LDA_indirect_X(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc+1;
+    //WRITEBACK
     cpu->a = mem->ram[mem->ram[cpu->addr]+cpu->x];
-    //BANDERAS
     if(!cpu->a) cpu->sr|= 0x02;
     else cpu->sr &= 0xFD;
     if(cpu->a & 0x80) cpu->sr|= 0x80;
@@ -1116,8 +1215,8 @@ void LDA_indirect_X(MOS6502* cpu, MEMORIA* mem){
 
 void LDA_indirect_Y(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc+1;
+    //WRITEBACK
     cpu->a = mem->ram[mem->ram[cpu->addr]+cpu->y];
-    //BANDERAS
     if(!cpu->a) cpu->sr|= 0x02;
     else cpu->sr &= 0xFD;
     if(cpu->a & 0x80) cpu->sr|= 0x80;
@@ -1130,8 +1229,8 @@ void LDA_indirect_Y(MOS6502* cpu, MEMORIA* mem){
 /////////////////////////////////////////////////////////
 void LDX_inmediate(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc+1;
+    //WRITEBACK
     cpu->x = mem->ram[cpu->addr];
-    //BANDERAS
     if(!cpu->x) cpu->sr|= 0x02;
     else cpu->sr &= 0xFD;
     if(cpu->x & 0x80) cpu->sr|= 0x80;
@@ -1140,8 +1239,8 @@ void LDX_inmediate(MOS6502* cpu, MEMORIA* mem){
 }
 void LDX_zero_page(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc+1;
+    //WRITEBACK
     cpu->x = mem->ram[mem->ram[cpu->addr]];
-    //BANDERAS
     if(!cpu->x) cpu->sr|= 0x02;
     else cpu->sr &= 0xFD;
     if(cpu->x & 0x80) cpu->sr|= 0x80;
@@ -1150,8 +1249,8 @@ void LDX_zero_page(MOS6502* cpu, MEMORIA* mem){
 }
 void LDX_zero_page_Y(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc+1;
+    //WRITEBACK
     cpu->x = mem->ram[mem->ram[cpu->addr] + cpu->y];
-    //BANDERAS
     if(!cpu->x) cpu->sr|= 0x02;
     else cpu->sr &= 0xFD;
     if(cpu->x & 0x80) cpu->sr|= 0x80;
@@ -1160,8 +1259,8 @@ void LDX_zero_page_Y(MOS6502* cpu, MEMORIA* mem){
 }
 void LDX_absolute(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc+1;
+    //WRITEBACK
     cpu->x = mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr] ];
-    //BANDERAS
     if(!cpu->x) cpu->sr|= 0x02;
     else cpu->sr &= 0xFD;
     if(cpu->x & 0x80) cpu->sr|= 0x80;
@@ -1170,8 +1269,8 @@ void LDX_absolute(MOS6502* cpu, MEMORIA* mem){
 }
 void LDX_absolute_Y(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc+1;
+    //WRITEBACK
     cpu->x = mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr] + cpu->y];
-    //BANDERAS
     if(!cpu->x) cpu->sr|= 0x02;
     else cpu->sr &= 0xFD;
     if(cpu->x & 0x80) cpu->sr|= 0x80;
@@ -1184,8 +1283,8 @@ void LDX_absolute_Y(MOS6502* cpu, MEMORIA* mem){
 /////////////////////////////////////////////////////////
 void LDY_inmediate(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc+1;
+    //WRITEBACK
     cpu->y = mem->ram[cpu->addr];
-    //BANDERAS
     if(!cpu->y) cpu->sr|= 0x02;
     else cpu->sr &= 0xFD;
     if(cpu->y & 0x80) cpu->sr|= 0x80;
@@ -1194,8 +1293,8 @@ void LDY_inmediate(MOS6502* cpu, MEMORIA* mem){
 }
 void LDY_zero_page(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc+1;
+    //WRITEBACK
     cpu->y = mem->ram[mem->ram[cpu->addr]];
-    //BANDERAS
     if(!cpu->y) cpu->sr|= 0x02;
     else cpu->sr &= 0xFD;
     if(cpu->y & 0x80) cpu->sr|= 0x80;
@@ -1204,8 +1303,8 @@ void LDY_zero_page(MOS6502* cpu, MEMORIA* mem){
 }
 void LDY_zero_page_X(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc+1;
+    //WRITEBACK
     cpu->y = mem->ram[mem->ram[cpu->addr] + cpu->x];
-    //BANDERAS
     if(!cpu->y) cpu->sr|= 0x02;
     else cpu->sr &= 0xFD;
     if(cpu->y & 0x80) cpu->sr|= 0x80;
@@ -1214,8 +1313,8 @@ void LDY_zero_page_X(MOS6502* cpu, MEMORIA* mem){
 }
 void LDY_absolute(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc+1;
-    cpu->y = mem->ram[mem->ram[cpu->addr]*256 + mem->ram[cpu->addr]];
-    //BANDERAS
+    //WRITEBACK
+    cpu->y = mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr]];
     if(!cpu->y) cpu->sr|= 0x02;
     else cpu->sr &= 0xFD;
     if(cpu->y & 0x80) cpu->sr|= 0x80;
@@ -1224,8 +1323,8 @@ void LDY_absolute(MOS6502* cpu, MEMORIA* mem){
 }
 void LDY_absolute_X(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc+1;
-    cpu->y = mem->ram[mem->ram[cpu->addr]*256 + mem->ram[cpu->addr] + cpu->x];
-    //BANDERAS
+    //WRITEBACK
+    cpu->y = mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr] + cpu->x];
     if(!cpu->y) cpu->sr|= 0x02;
     else cpu->sr &= 0xFD;
     if(cpu->y & 0x80) cpu->sr|= 0x80;
@@ -1246,8 +1345,9 @@ void LSR_accomulator(MOS6502* cpu, MEMORIA* mem){
             cpu->sr &= 0xFE; //CARRY = 0
         }
     }
-    //MODIFICAR OPERANDO
+    //EXECUTE
     cpu->a >>= 1;
+    //WRITEBACK
     if(!cpu->a) cpu->sr |= 0x02; //MODIFICAR ZERO
     else cpu->sr &= 0xFD;
     if(cpu->a & 0x80 ) cpu->sr |= 0x80; //MODIFICAR NEGATIVE
@@ -1286,13 +1386,13 @@ void LSR_zero_page_X(MOS6502* cpu, MEMORIA* mem){
             cpu->pc &= 0xFE; //CARRY = 0
         }
     }
-    //MODIFICAR OPERANDO
+    //EXECUTE
     mem->ram[mem->ram[cpu->addr] + cpu->x] >>= 1;
+    //WRITEBACK
     if(!mem->ram[mem->ram[cpu->addr] + cpu->x]) cpu->sr |= 0x02; //MODIFICAR ZERO
     else cpu->sr &= 0xFD;
     if(mem->ram[mem->ram[cpu->addr] + cpu->x] & 0x80 ) cpu->sr |= 0x80; //MODIFICAR NEGATIVE
     else cpu->sr &= 0x7F;
-    
     cpu->pc += 2;        
 }
 void LSR_absolute(MOS6502* cpu, MEMORIA* mem){
@@ -1306,13 +1406,13 @@ void LSR_absolute(MOS6502* cpu, MEMORIA* mem){
             cpu->pc &= 0xFE; //CARRY = 0
         }
     }
-    //MODIFICAR OPERANDO
+    //EXECUTE
     mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr]] >>= 1;
+    //WRITEBACK
     if(!mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr]]) cpu->sr |= 0x02; //MODIFICAR ZERO
     else cpu->sr &= 0xFD;
     if(mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr]] & 0x80 ) cpu->sr |= 0x80; //MODIFICAR NEGATIVE
     else cpu->sr &= 0x7F;
-    
     cpu->pc += 3;    
 }
 void LSR_absolute_X(MOS6502* cpu, MEMORIA* mem){
@@ -1326,8 +1426,9 @@ void LSR_absolute_X(MOS6502* cpu, MEMORIA* mem){
             cpu->pc &= 0xFE; //CARRY = 0
         }
     }
-    //MODIFICAR OPERANDO
+    //EXECUTE
     mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr] + cpu->x] >>= 1;
+    //WRITEBACK
     if(!mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr] + cpu->x]) cpu->sr |= 0x02; //MODIFICAR ZERO
     else cpu->sr &= 0xFD;
     if(mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr] + cpu->x] & 0x80 ) cpu->sr |= 0x80; //MODIFICAR NEGATIVE
@@ -1337,6 +1438,7 @@ void LSR_absolute_X(MOS6502* cpu, MEMORIA* mem){
 }
 
 void NOP(MOS6502* cpu, MEMORIA* mem){
+    //WRITEBACK
     cpu->pc++;
 }
 
@@ -1345,7 +1447,9 @@ void NOP(MOS6502* cpu, MEMORIA* mem){
 //////////////
 void ORA_inmediate(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc + 1;
+    //EXECUTE
     cpu->a |= mem->ram [cpu->addr];
+    //WRITEBACK
     if(!cpu->a) cpu->sr |= 0x02;
     else cpu->sr &= 0xFD;
     if(cpu->a & 0x80) cpu->sr |= 0x80;
@@ -1354,7 +1458,9 @@ void ORA_inmediate(MOS6502* cpu, MEMORIA* mem){
 }
 void ORA_zero_page(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc + 1;
+    //EXECUTE
     cpu->a |= mem->ram[mem->ram[cpu->addr]];
+    //WRITEBACK
     if(!cpu->a) cpu->sr |= 0x02;
     else cpu->sr &= 0xFD;
     if(cpu->a & 0x80) cpu->sr |= 0x80;
@@ -1363,7 +1469,9 @@ void ORA_zero_page(MOS6502* cpu, MEMORIA* mem){
 }
 void ORA_zero_page_X(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc + 1;
+    //EXECUTE
     cpu->a |= mem->ram[mem->ram[cpu->addr] + cpu->x];
+    //WRITEBACK
     if(!cpu->a) cpu->sr |= 0x02;
     else cpu->sr &= 0xFD;
     if(cpu->a & 0x80) cpu->sr |= 0x80;
@@ -1372,7 +1480,9 @@ void ORA_zero_page_X(MOS6502* cpu, MEMORIA* mem){
 }
 void ORA_absolute(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc + 1;
+    //EXECUTE
     cpu->a |= mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr]];
+    //WRITEBACK
     if(!cpu->a) cpu->sr |= 0x02;
     else cpu->sr &= 0xFD;
     if(cpu->a & 0x80) cpu->sr |= 0x80;
@@ -1381,7 +1491,9 @@ void ORA_absolute(MOS6502* cpu, MEMORIA* mem){
 }
 void ORA_absolute_X(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc + 1;
+    //EXECUTE
     cpu->a |= mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr] + cpu->x];
+    //WRITEBACK
     if(!cpu->a) cpu->sr |= 0x02;
     else cpu->sr &= 0xFD;
     if(cpu->a & 0x80) cpu->sr |= 0x80;
@@ -1390,7 +1502,9 @@ void ORA_absolute_X(MOS6502* cpu, MEMORIA* mem){
 }
 void ORA_absolute_Y(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc + 1;
+    //EXECUTE
     cpu->a |= mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr] + cpu->y];
+    //WRITEBACK
     if(!cpu->a) cpu->sr |= 0x02;
     else cpu->sr &= 0xFD;
     if(cpu->a & 0x80) cpu->sr |= 0x80;
@@ -1399,7 +1513,9 @@ void ORA_absolute_Y(MOS6502* cpu, MEMORIA* mem){
 }
 void ORA_indirect_X(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc + 1;
+    //EXECUTE
     cpu->a |= mem->ram[mem->ram[cpu->addr] + cpu->x];
+    //WRITEBACK
     if(!cpu->a) cpu->sr |= 0x02;
     else cpu->sr &= 0xFD;
     if(cpu->a & 0x80) cpu->sr |= 0x80;
@@ -1408,7 +1524,9 @@ void ORA_indirect_X(MOS6502* cpu, MEMORIA* mem){
 }
 void ORA_indirect_Y(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc + 1;
+    //EXECUTE
     cpu->a |= mem->ram[mem->ram[cpu->addr] + cpu->y];
+    //WRITEBACK
     if(!cpu->a) cpu->sr |= 0x02;
     else cpu->sr &= 0xFD;
     if(cpu->a & 0x80) cpu->sr |= 0x80;
@@ -1421,7 +1539,9 @@ void ORA_indirect_Y(MOS6502* cpu, MEMORIA* mem){
 void ROL_accumulator(MOS6502* cpu, MEMORIA* mem){
     uint8_t aux = cpu->a&0x80;
     aux >>= 7;
+    //EXECUTE
     cpu->a <<= 1;
+    //WRITEBACK
     if(cpu->sr&0x01) cpu->a++;
     if(aux != cpu->sr&0x01){
         if(aux) cpu->sr |= 0x01;
@@ -1431,15 +1551,16 @@ void ROL_accumulator(MOS6502* cpu, MEMORIA* mem){
     else cpu->sr &= 0xFD;
     if(cpu->a & 0x80) cpu->sr |= 0x80;
     else cpu->sr &= 0x7F;
-    
     cpu->pc++;
-    
 }
+
 void ROL_zero_page(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc + 1;
     uint8_t aux = mem->ram[mem->ram[cpu->addr]]&0x80;
     aux >>= 7;
+    //EXECUTE
     mem->ram[mem->ram[cpu->addr]] <<= 1;
+    //WRITEBACK
     if(cpu->sr&0x01) mem->ram[mem->ram[cpu->addr]]++;
     if(aux != cpu->sr&0x01){
         if(aux) cpu->sr |= 0x01;
@@ -1449,15 +1570,16 @@ void ROL_zero_page(MOS6502* cpu, MEMORIA* mem){
     else cpu->sr &= 0xFD;
     if(mem->ram[mem->ram[cpu->addr]] & 0x80) cpu->sr |= 0x80;
     else cpu->sr &= 0x7F;
-    
     cpu->pc+=2;
-    
 }
+
 void ROL_zero_page_X(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc + 1;
     uint8_t aux = mem->ram[mem->ram[cpu->addr] + cpu->x]&0x80;
     aux >>= 7;
+    //EXECUTE
     mem->ram[mem->ram[cpu->addr] + cpu->x] <<= 1;
+    //WRITEBACK
     if(cpu->sr&0x01) mem->ram[mem->ram[cpu->addr] + cpu->x]++;
     if(aux != cpu->sr&0x01){
         if(aux) cpu->sr |= 0x01;
@@ -1467,15 +1589,15 @@ void ROL_zero_page_X(MOS6502* cpu, MEMORIA* mem){
     else cpu->sr &= 0xFD;
     if(mem->ram[mem->ram[cpu->addr] + cpu->x] & 0x80) cpu->sr |= 0x80;
     else cpu->sr &= 0x7F;
-    
-    cpu->pc+=2;
-        
+    cpu->pc+=2;    
 }
 void ROL_absolute(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc + 1;
     uint8_t aux = mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr]]&0x80;
     aux >>= 7;
+    //EXECUTE
     mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr]] <<= 1;
+    //WRITEBACK
     if(cpu->sr&0x01) mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr]]++;
     if(aux != cpu->sr&0x01){
         if(aux) cpu->sr |= 0x01;
@@ -1485,15 +1607,15 @@ void ROL_absolute(MOS6502* cpu, MEMORIA* mem){
     else cpu->sr &= 0xFD;
     if(mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr]] & 0x80) cpu->sr |= 0x80;
     else cpu->sr &= 0x7F;
-    
     cpu->pc+=3;
-    
 }
 void ROL_absolute_X(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc + 1;
     uint8_t aux = mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr] + cpu->x]&0x80;
     aux >>= 7;
+    //EXECUTE
     mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr] + cpu->x] <<= 1;
+    //WRITEBACK
     if(cpu->sr&0x01) mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr] + cpu->x]++;
     if(aux != cpu->sr&0x01){
         if(aux) cpu->sr |= 0x01;
@@ -1503,16 +1625,16 @@ void ROL_absolute_X(MOS6502* cpu, MEMORIA* mem){
     else cpu->sr &= 0xFD;
     if(mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr] + cpu->x] & 0x80) cpu->sr |= 0x80;
     else cpu->sr &= 0x7F;
-    
     cpu->pc+=3;
-        
 }
 ////////////
 //  ROR
 ///////////////
 void ROR_accumulator(MOS6502* cpu, MEMORIA* mem){
     uint8_t aux = cpu->a&0x01;
+    //EXECUTE
     cpu->a >>= 1;
+    //WRITEBACK
     if(cpu->sr&0x01) cpu->a |= 0x80;
     if(aux != cpu->sr&0x01){
         if(aux) cpu->sr |= 0x01;
@@ -1522,14 +1644,14 @@ void ROR_accumulator(MOS6502* cpu, MEMORIA* mem){
     else cpu->sr &= 0xFD;
     if(cpu->a & 0x80) cpu->sr |= 0x80;
     else cpu->sr &= 0x7F;
-    
-    cpu->pc++;
-        
+    cpu->pc++;    
 }
 void ROR_zero_page(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc + 1;
     uint8_t aux = mem->ram[mem->ram[cpu->addr]]&0x01;
+    //EXECUTE
     mem->ram[mem->ram[cpu->addr]] >>= 1;
+    //WRITEBACK
     if(cpu->sr&0x01) mem->ram[mem->ram[cpu->addr]] |= 0x80;
     if(aux != cpu->sr&0x01){
         if(aux) cpu->sr |= 0x01;
@@ -1539,14 +1661,14 @@ void ROR_zero_page(MOS6502* cpu, MEMORIA* mem){
     else cpu->sr &= 0xFD;
     if(mem->ram[mem->ram[cpu->addr]] & 0x80) cpu->sr |= 0x80;
     else cpu->sr &= 0x7F;
-    
     cpu->pc+=2;
-    
 }
 void ROR_zero_page_X(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc + 1;
     uint8_t aux = mem->ram[mem->ram[cpu->addr] + cpu->x]&0x01;
+    //EXECUTE
     mem->ram[mem->ram[cpu->addr] + cpu->x] >>= 1;
+    //WRITEBACK
     if(cpu->sr&0x01) mem->ram[mem->ram[cpu->addr] + cpu->x] |= 0x80;
     if(aux != cpu->sr&0x01){
         if(aux) cpu->sr |= 0x01;
@@ -1556,13 +1678,14 @@ void ROR_zero_page_X(MOS6502* cpu, MEMORIA* mem){
     else cpu->sr &= 0xFD;
     if(mem->ram[mem->ram[cpu->addr] + cpu->x] & 0x80) cpu->sr |= 0x80;
     else cpu->sr &= 0x7F;
-    
     cpu->pc+=2;        
 }
 void ROR_absolute(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc + 1;
     uint8_t aux = mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr]]&0x01;
+    //EXECUTE
     mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr]] >>= 1;
+    //WRITEBACK
     if(cpu->sr&0x01) mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr]] |= 0x80;
     if(aux != cpu->sr&0x01){
         if(aux) cpu->sr |= 0x01;
@@ -1578,7 +1701,9 @@ void ROR_absolute(MOS6502* cpu, MEMORIA* mem){
 void ROR_absolute_X(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc + 1;
     uint8_t aux = mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr] + cpu->x]&0x01;
+    //EXECUTE
     mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr] + cpu->x] >>= 1;
+    //WRITEBACK
     if(cpu->sr&0x01) mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr] + cpu->x] |= 0x80;
     if(aux != cpu->sr&0x01){
         if(aux) cpu->sr |= 0x01;
@@ -1588,7 +1713,6 @@ void ROR_absolute_X(MOS6502* cpu, MEMORIA* mem){
     else cpu->sr &= 0xFD;
     if(mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr] + cpu->x] & 0x80) cpu->sr |= 0x80;
     else cpu->sr &= 0x7F;
-    
     cpu->pc+=3;
 }
 
@@ -1596,28 +1720,116 @@ void ROR_absolute_X(MOS6502* cpu, MEMORIA* mem){
 //  SBC
 ////////////////
 void SBC_inmediate(MOS6502* cpu, MEMORIA* mem){
-    
+    //EXECUTE
+    cpu->addr = cpu->pc+1;
+    uint16_t aux = cpu->a - mem->ram[cpu->addr] - 1;
+    if(cpu->sr & 0x01) aux += 1;
+    //WRITEBACK
+    if(aux & 0x100) cpu->sr |= 0x01; //MODIFICAR CARRY
+    cpu->a = aux;
+    if(cpu->a & 0x80) cpu->sr |= 0x80; //MODIFICAR NEGATIVE
+    else cpu->sr &= 0x7F;
+    if(!cpu->a) cpu->sr |= 0x02; //MODIFICAR ZERO
+    else cpu->sr &= 0xFD;
+    cpu->pc += 2;
 }
 void SBC_zero_page(MOS6502* cpu, MEMORIA* mem){
-    
+    //EXECUTE
+    cpu->addr = cpu->pc+1;
+    uint16_t aux = cpu->a - mem->ram[mem->ram[cpu->addr]] - 1;
+    if(cpu->sr & 0x01) aux += 1;
+    //WRITEBACK
+    if(aux & 0x100) cpu->sr |= 0x01; //MODIFICAR CARRY
+    cpu->a = aux;
+    if(cpu->a & 0x80) cpu->sr |= 0x80; //MODIFICAR NEGATIVE
+    else cpu->sr &= 0x7F;
+    if(!cpu->a) cpu->sr |= 0x02; //MODIFICAR ZERO
+    else cpu->sr &= 0xFD;
+    cpu->pc += 2;    
 }
 void SBC_zero_page_X(MOS6502* cpu, MEMORIA* mem){
-    
+    //EXECUTE
+    cpu->addr = cpu->pc+1;
+    uint16_t aux = cpu->a - mem->ram[mem->ram[cpu->addr] + cpu->x] - 1;
+    if(cpu->sr & 0x01) aux += 1;
+    //WRITEBACK
+    if(aux & 0x100) cpu->sr |= 0x01; //MODIFICAR CARRY
+    cpu->a = aux;
+    if(cpu->a & 0x80) cpu->sr |= 0x80; //MODIFICAR NEGATIVE
+    else cpu->sr &= 0x7F;
+    if(!cpu->a) cpu->sr |= 0x02; //MODIFICAR ZERO
+    else cpu->sr &= 0xFD;
+    cpu->pc += 2;    
 }
 void SBC_absolute(MOS6502* cpu, MEMORIA* mem){
-    
+    //EXECUTE
+    cpu->addr = cpu->pc+1;
+    uint16_t aux = cpu->a - mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr]] - 1;
+    if(cpu->sr & 0x01) aux += 1;
+    //WRITEBACK
+    if(aux & 0x100) cpu->sr |= 0x01; //MODIFICAR CARRY
+    cpu->a = aux;
+    if(cpu->a & 0x80) cpu->sr |= 0x80; //MODIFICAR NEGATIVE
+    else cpu->sr &= 0x7F;
+    if(!cpu->a) cpu->sr |= 0x02; //MODIFICAR ZERO
+    else cpu->sr &= 0xFD;
+    cpu->pc += 3;    
 }
 void SBC_absolute_X(MOS6502* cpu, MEMORIA* mem){
-    
+    //EXECUTE
+    cpu->addr = cpu->pc+1;
+    uint16_t aux = cpu->a - mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr] + cpu->x] - 1;
+    if(cpu->sr & 0x01) aux += 1;
+    //WRITEBACK
+    if(aux & 0x100) cpu->sr |= 0x01; //MODIFICAR CARRY
+    cpu->a = aux;
+    if(cpu->a & 0x80) cpu->sr |= 0x80; //MODIFICAR NEGATIVE
+    else cpu->sr &= 0x7F;
+    if(!cpu->a) cpu->sr |= 0x02; //MODIFICAR ZERO
+    else cpu->sr &= 0xFD;
+    cpu->pc += 3;    
 }
 void SBC_absolute_Y(MOS6502* cpu, MEMORIA* mem){
-    
+    //EXECUTE
+    cpu->addr = cpu->pc+1;
+    uint16_t aux = cpu->a - mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr] + cpu->x] - 1;
+    if(cpu->sr & 0x01) aux += 1;
+    //WRITEBACK
+    if(aux & 0x100) cpu->sr |= 0x01; //MODIFICAR CARRY
+    cpu->a = aux;
+    if(cpu->a & 0x80) cpu->sr |= 0x80; //MODIFICAR NEGATIVE
+    else cpu->sr &= 0x7F;
+    if(!cpu->a) cpu->sr |= 0x02; //MODIFICAR ZERO
+    else cpu->sr &= 0xFD;
+    cpu->pc += 3;    
 }
 void SBC_indirect_X(MOS6502* cpu, MEMORIA* mem){
-    
+    //EXECUTE
+    cpu->addr = cpu->pc+1;
+    uint16_t aux = cpu->a - mem->ram[mem->ram[cpu->addr] + cpu->x] - 1;
+    if(cpu->sr & 0x01) aux += 1;
+    //WRITEBACK
+    if(aux & 0x100) cpu->sr |= 0x01; //MODIFICAR CARRY
+    cpu->a = aux;
+    if(cpu->a & 0x80) cpu->sr |= 0x80; //MODIFICAR NEGATIVE
+    else cpu->sr &= 0x7F;
+    if(!cpu->a) cpu->sr |= 0x02; //MODIFICAR ZERO
+    else cpu->sr &= 0xFD;
+    cpu->pc += 2;        
 }
 void SBC_indirect_Y(MOS6502* cpu, MEMORIA* mem){
-    
+    //EXECUTE
+    cpu->addr = cpu->pc+1;
+    uint16_t aux = cpu->a - mem->ram[mem->ram[cpu->addr] + cpu->y] - 1;
+    if(cpu->sr & 0x01) aux += 1;
+    //WRITEBACK
+    if(aux & 0x100) cpu->sr |= 0x01; //MODIFICAR CARRY
+    cpu->a = aux;
+    if(cpu->a & 0x80) cpu->sr |= 0x80; //MODIFICAR NEGATIVE
+    else cpu->sr &= 0x7F;
+    if(!cpu->a) cpu->sr |= 0x02; //MODIFICAR ZERO
+    else cpu->sr &= 0xFD;
+    cpu->pc += 2;        
 }
 
 
@@ -1630,7 +1842,6 @@ void SBC_indirect_Y(MOS6502* cpu, MEMORIA* mem){
 void TAX(MOS6502* cpu, MEMORIA* mem){
     //EXECUTE
     cpu->x = cpu->a;
-    //BANDERAS
     if(!cpu->x) cpu->sr|= 0x02;
     else cpu->sr &= 0xFD;
     if(cpu->x & 0x80) cpu->sr|= 0x80;
@@ -1639,9 +1850,8 @@ void TAX(MOS6502* cpu, MEMORIA* mem){
 }
 //TRANSFIERE DEL REG X AL AC A
 void TXA(MOS6502* cpu, MEMORIA* mem){
-    //EXECUTE
+    //WRITEBACK
     cpu->a = cpu->x;
-    //BANDERAS
     if(!cpu->a) cpu->sr|= 0x02;
     else cpu->sr &= 0xFD;
     if(cpu->a & 0x80) cpu->sr|= 0x80;  
@@ -1652,7 +1862,7 @@ void TXA(MOS6502* cpu, MEMORIA* mem){
 void DEX(MOS6502* cpu, MEMORIA* mem){
     //EXECUTE
     cpu->x--;
-    //BANDERAS
+    //WRITEBACK
     if(!cpu->x) cpu->sr|= 0x02;
     else cpu->sr &= 0xFD;
     if(cpu->x & 0x80) cpu->sr|= 0x80;  
@@ -1663,7 +1873,7 @@ void DEX(MOS6502* cpu, MEMORIA* mem){
 void INX(MOS6502* cpu, MEMORIA* mem){
     //EXECUTE
     cpu->x++;
-    //BANDERAS
+    //WRITEBACK
     if(!cpu->x) cpu->sr|= 0x02;
     else cpu->sr &= 0xFD;
     if(cpu->x & 0x80) cpu->sr|= 0x80;  
@@ -1674,7 +1884,7 @@ void INX(MOS6502* cpu, MEMORIA* mem){
 void TAY(MOS6502* cpu, MEMORIA* mem){
     //EXECUTE
     cpu->y = cpu->a;
-    //BANDERAS
+    //WRITEBACK
     if(!cpu->y) cpu->sr|= 0x02;
     else cpu->sr &= 0xFD;
     if(cpu->y & 0x80) cpu->sr|= 0x80;  
@@ -1685,7 +1895,7 @@ void TAY(MOS6502* cpu, MEMORIA* mem){
 void TYA(MOS6502* cpu, MEMORIA* mem){
     //EXECUTE
     cpu->a = cpu->y;
-    //BANDERAS
+    //WRITEBACK
     if(!cpu->a) cpu->sr|= 0x02;
     else cpu->sr &= 0xFD;
     if(cpu->a & 0x80) cpu->sr|= 0x80;  
@@ -1696,7 +1906,7 @@ void TYA(MOS6502* cpu, MEMORIA* mem){
 void DEY(MOS6502* cpu, MEMORIA* mem){
     //EXECUTE
     cpu->y--;
-    //BANDERAS
+    //WRITEBACK
     if(!cpu->y) cpu->sr|= 0x02;
     else cpu->sr &= 0xFD;
     if(cpu->y & 0x80) cpu->sr|= 0x80;  
@@ -1707,7 +1917,7 @@ void DEY(MOS6502* cpu, MEMORIA* mem){
 void INY(MOS6502* cpu, MEMORIA* mem){
     //EXECUTE
     cpu->y++;
-    //BANDERAS
+    //WRITEBACK
     if(!cpu->y) cpu->sr|= 0x02;
     else cpu->sr &= 0xFD;
     if(cpu->y & 0x80) cpu->sr|= 0x80;  
@@ -1717,48 +1927,59 @@ void INY(MOS6502* cpu, MEMORIA* mem){
 
 
 void RTI_implied(MOS6502* cpu, MEMORIA* mem){
-    //FALTA MAS
-    cpu->pc++;
+    //************************************
+    //          NO IMPLEMENTAR 
+    //************************************
 }
 void RTS_implied(MOS6502* cpu, MEMORIA* mem){
-    //FALTA MAS
-    cpu->pc++;
+    //WRITEBACK
+    uint16_t aux_l = mem->ram[cpu->sp++];
+    uint16_t aux_m = mem->ram[cpu->sp++]*256;
+    aux_m += aux_l;
+    cpu->pc = aux_m + 1;
 }
 //////////////////////////////
 ////    STA
 /////////////////////////////
 void STA_zero_page(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc+1;
+    //WRITEBACK
     mem->ram[mem->ram[cpu->addr]] = cpu->a;
     cpu->pc += 2;
 }
 void STA_zero_page_X(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc+1;
+    //WRITEBACK
     mem->ram[mem->ram[cpu->addr] + cpu->x] = cpu->a;
     cpu->pc += 2;
 }
 void STA_absolute(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc+1;
+    //WRITEBACK
     mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr]] = cpu->a;
     cpu->pc += 3;
 }
 void STA_absolute_X(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc+1;
+    //WRITEBACK
     mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr] + cpu->x] = cpu->a;
     cpu->pc += 3;
 }
 void STA_absolute_Y(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc+1;
+    //WRITEBACK
     mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr] + cpu->y] = cpu->a;
     cpu->pc += 3;
 }
 void STA_indirect_X(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc+1;
+    //WRITEBACK
     mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr] + cpu->x] = cpu->a;
     cpu->pc += 3;
 }
 void STA_indirect_Y(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc+1;
+    //WRITEBACK
     mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr] + cpu->y] = cpu->a;
     cpu->pc += 3;
 }
@@ -1767,28 +1988,32 @@ void STA_indirect_Y(MOS6502* cpu, MEMORIA* mem){
 ///     STACK INSTRUCTION
 ///////////////////////////
 void TXS(MOS6502* cpu, MEMORIA* mem){
+    //WRITEBACK
     mem->ram[cpu->sp--] = cpu->x;
     cpu->pc++;
 }
 void TSX(MOS6502* cpu, MEMORIA* mem){
+    //WRITEBACK
     cpu->x = mem->ram[cpu->sp++];
     cpu->pc++;
 }
 void PHA(MOS6502* cpu, MEMORIA* mem){
+    //WRITEBACK
     mem->ram[cpu->sp--] = cpu->a;
     cpu->pc++;
 }
 void PLA(MOS6502* cpu, MEMORIA* mem){
+    //WRITEBACK
     cpu->a = mem->ram[cpu->sp++];
     cpu->pc++;
 }
 void PHP(MOS6502* cpu, MEMORIA* mem){
-    // FALTA
+    //WRITEBACK
     mem->ram[cpu->sp--] = cpu->sr;
     cpu->pc++;
 }
 void PLP(MOS6502* cpu, MEMORIA* mem){
-    // FALTA
+    //WRITEBACK
     cpu->sr = mem->ram[cpu->sp++];
     cpu->pc++;
 }
@@ -1798,16 +2023,19 @@ void PLP(MOS6502* cpu, MEMORIA* mem){
 ////////////////////////
 void STX_zero_page(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc+1;
+    //WRITEBACK
     mem->ram[mem->ram[cpu->addr]] = cpu->x;
     cpu->pc += 2;
 }
 void STX_zero_page_Y(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc+1;
+    //WRITEBACK
     mem->ram[mem->ram[cpu->addr] + cpu->y] = cpu->x;
     cpu->pc += 2;
 }
 void STX_absolute(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc+1;
+    //WRITEBACK
     mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr]] = cpu->x;
     cpu->pc += 3;
 }
@@ -1817,16 +2045,19 @@ void STX_absolute(MOS6502* cpu, MEMORIA* mem){
 ////////////////////////
 void STY_zero_page(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc+1;
+    //WRITEBACK
     mem->ram[mem->ram[cpu->addr]] = cpu->y;
     cpu->pc += 2;
 }
 void STY_zero_page_X(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc+1;
+    //WRITEBACK
     mem->ram[mem->ram[cpu->addr] + cpu->x] = cpu->y;
     cpu->pc += 2;
 }
 void STY_absolute(MOS6502* cpu, MEMORIA* mem){
     cpu->addr = cpu->pc+1;
+    //WRITEBACK
     mem->ram[mem->ram[cpu->addr+1]*256 + mem->ram[cpu->addr]] = cpu->y;
     cpu->pc += 3;
 }

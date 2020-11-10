@@ -1,0 +1,20 @@
+LDA #$00
+LDX #$00
+bucle_1:
+CLC 
+ADC #$05
+STA $6000,X
+INX
+CPX #$08
+BNE bucle_1
+LDA #$00
+STA $6000,X
+LDX #$FF
+
+bucle_2:
+INX 
+LDA $6000,X
+CMP #$00
+BNE bucle_2
+
+BRK

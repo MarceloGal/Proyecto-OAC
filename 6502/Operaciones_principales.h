@@ -27,4 +27,6 @@ void print_MOS6502(MOS6502* cpu);
 
 void scan_codigo(MOS6502* cpu, MEMORIA* mem, const char* nombre);
 
+void printBits(size_t const size, void const * const ptr);
+
 #endif /* OPERACIONES_PRINCIPALES_H */
