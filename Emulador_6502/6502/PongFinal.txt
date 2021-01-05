@@ -1,0 +1,268 @@
+; tamaño barras:  		0x00
+;coord pelota x:		0x01
+;coord pelota y:    	0x02
+;coord y[] barra 1:		0x03,0x04,0x05
+;coord y[] barra 2:		0x06,0x07,0x08
+;direccion pelota:		0x09
+;tecla presionada:		0xff
+
+;tamaño X:				61 [0,60]
+;tamaño y:				11 [0,10]
+
+jsr iniciar
+jsr bucle
+
+
+iniciar:
+	;Iniciar Tamaño Barras
+	lda #3
+	sta $00
+
+	;Iniciar Barra 1
+	lda #3
+	sta $03
+	lda #4
+	sta $04
+	lda #5
+	sta $05
+
+	;Iniciar Barra 2
+	lda #3
+	sta $06
+	lda #4
+	sta $07
+	lda #5
+	sta $08
+
+	;Iniciar pelota
+	lda #5
+	sta $01
+	sta $02
+
+	;Iniciar Direccion
+	lda #01
+	sta $09
+
+	rts
+
+bucle:
+	jsr leerTecla
+	jsr actPelota
+	jsr gol
+	jsr revisar
+	jsr gol
+	jmp bucle
+
+leerTecla:
+  tax                 	;recibir info
+
+  lda $ff             	;Cargar tecla
+
+  cmp #72
+  beq UpP2				;revisar tecla arriba
+  cmp #80
+  beq DownP2
+  cmp #119
+  beq UpP1
+  cmp #115
+  beq DownP1
+
+  rts
+
+UpP2:
+	dec $06
+	dec $07
+	dec $08
+	rts
+
+DownP2:
+	inc $06
+	inc $07
+	inc $08
+	rts
+
+UpP1:
+	dec $03
+	dec $04
+	dec $05
+	rts
+
+DownP1:
+	inc $03
+	inc $04
+	inc $05
+	rts
+
+actPelota:
+	lda $09		;Cargar Direccion
+	cmp #01
+	beq VectorUno
+	cmp #02
+	beq VectorDos
+	cmp #03
+	beq VectorTres
+	cmp #04
+	beq VectorCuatro
+	cmp #05
+	beq VectorCinco
+	cmp #06
+	beq VectorSeis
+	cmp #07
+	beq VectorSiete
+	cmp #08
+	beq VectorOcho
+	
+	rts
+
+VectorUno:
+	inc $01
+	rts
+
+VectorDos:
+	inc $01
+	inc $02
+	rts
+
+VectorTres:
+	inc $02
+	rts
+
+VectorCuatro:
+	dec $01
+	inc $02
+	rts
+
+VectorCinco:
+	dec $01
+	rts
+
+VectorSeis:
+	dec $01
+	dec $02
+	rts
+
+VectorSiete:
+	dec $02
+	rts
+
+VectorOcho:
+	inc $01
+	dec $02
+	rts
+
+revisar:
+	;cargar X pelota para choques horizontales
+	lda $01
+	cmp #0
+	beq CP1
+	cmp #59
+	beq CP2
+
+	;cargar Y pelota para choques verticales
+	lda $02
+	cmp #00
+	beq CV1
+	cmp #10
+	beq CV2
+
+	rts
+
+
+
+CP1:
+	lda $02
+	cmp $03
+	beq CP12
+	cmp $04
+	beq CP11
+	cmp $05
+	beq CP13
+	rts
+
+CP11:
+	lda #01
+	sta $09
+	rts
+
+CP12:
+	lda #08
+	sta $09
+	rts
+
+CP13:
+	lda #02
+	sta $09
+	rts
+
+CP2:
+	lda $02
+	cmp $06
+	beq CP22
+	cmp $07
+	beq CP21
+	cmp $08
+	beq CP23
+	rts
+
+CP21:
+	lda #05
+	sta $09
+	rts
+
+CP22:
+	lda #06
+	sta $09
+	rts
+
+CP23:
+	lda #04
+	sta $09
+	rts
+
+
+CV1:
+	lda $09			;cargar Direcion
+	cmp #08
+	beq CV11
+	cmp #06
+	beq CV12
+	rts
+
+CV11:
+	lda #02
+	sta $09
+	rts
+
+CV12:
+	lda #04
+	sta $09
+	rts
+
+CV2:
+	lda $09			;cargar Direcion
+	cmp #02
+	beq CV21
+	cmp #04
+	beq CV22
+	rts
+
+CV21:
+	lda #08
+	sta $09
+	rts
+
+CV22:
+	lda #06
+	sta $09
+	rts
+
+gol:
+	lda $01
+	cmp #0
+	beq ggwp
+	cmp #60
+	beq ggwp
+	rts
+
+ggwp:
+	tax

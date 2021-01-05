@@ -1,0 +1,182 @@
+jsr iniciar
+jsr bucle
+
+iniciar:
+  ;X de cabeza
+  lda #$5
+  sta $10
+
+  ;y de cabeza
+  lda #5
+  sta $11
+
+  ;X manzana
+  lda $fe
+  sta $00
+
+  ;Y manzana
+  lda $fe
+  sta $01
+
+  ;tamaño inicial 2 (4bytes) nodos
+  lda #4
+  sta $03
+
+  ;iniciar nodos
+  ;nodo1
+  lda #5
+  sta $12
+  lda #3
+  sta $13
+  ;nodo 2
+  lda #5
+  sta $14
+  lda #4
+  sta $15
+
+  ;iniciar direccion
+  lda #80
+  sta $ff 
+
+
+  rts
+
+
+bucle:
+  jsr leerTecla
+  jsr revisar
+  
+  jmp bucle
+
+
+leerTecla:
+  tax                 ;recibir info
+
+  jsr actualizarCuerpo
+
+  lda $ff             ;Cargar direccion
+
+  cmp #72             ;comparar ascii arriba
+  beq moverArriba
+  cmp #80             ;comparar ascii abajo
+  beq moverAbajo
+  cmp #77             ;comparar ascii derecha
+  beq moverDerecha
+  cmp #75             ;comparar ascii izquierda
+  beq moverIzquierda
+
+  rts
+
+
+actualizarCuerpo:
+  ldx $03             ;cargar longitud en x
+  jsr bucleAct
+  rts
+
+bucleAct:
+  ;act coord y
+  dex
+  dex
+  ldy $11,x
+  inx
+  inx
+  sty $11,x
+
+  ;act coord x
+  dex
+  dex 
+  ldy $10,x
+  inx
+  inx
+  sty $10,x
+
+  dex
+  dex
+
+  cpx #0
+  bne bucleAct
+  
+  rts 
+
+moverArriba:
+
+
+  ldx $11             ;cargar y cabeza
+  dex
+  stx $11             ;actualizar y cabeza
+
+  rts
+
+moverAbajo:
+
+
+  ldx $11             ;cargar y cabeza
+  inx
+  stx $11             ;actualizar y cabeza
+
+  rts
+
+moverDerecha:
+
+
+  ldx $10             ;cargar y cabeza
+  inx
+  stx $10             ;actualizar y cabeza
+
+  rts
+
+moverIzquierda:
+
+
+  ldx $10             ;cargar x cabeza
+  dex
+  stx $10             ;actualizar x cabeza
+
+  rts
+
+
+revisar:
+  ;Comparar x
+  lda $10             ;cargar X cabeza
+  cmp #1
+  beq ggwp 
+  cmp #58
+  beq ggwp
+  
+  ;Comparar y
+  lda $11             ;cargar Y cabeza
+  cmp #1
+  beq ggwp 
+  cmp #28
+  beq ggwp
+
+  ;Revisar si come
+  
+  ;coord X
+  lda $10
+  cmp $00
+  beq IgualdadUno
+
+  rts
+
+IgualdadUno:
+  ;coord Y
+  lda $11
+  cmp $01
+  beq Agrandar
+  rts
+
+Agrandar:
+  inc $03
+  inc $03
+
+  ;generar Manzana Nueva
+  lda $fe
+  sta $00
+  lda $fe
+  sta $01 
+
+  rts
+
+ggwp:
+  tax
